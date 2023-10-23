@@ -1,125 +1,238 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:support_qa/sidebarx.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(SidebarXExampleApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class SidebarXExampleApp extends StatelessWidget {
+  SidebarXExampleApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  final _controller = SidebarXController(selectedIndex: 0, extended: true);
+  final _key = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Q&A Support',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a blue toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        primaryColor: primaryColor,
+        canvasColor: white,
+        scaffoldBackgroundColor: white,
+        textTheme: const TextTheme(
+          headlineSmall: TextStyle(
+            color: Colors.white,
+            fontSize: 46,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: Builder(
+        builder: (context) {
+          final isSmallScreen = MediaQuery.of(context).size.width < 600;
+          return Scaffold(
+            key: _key,
+            appBar: isSmallScreen
+                ? AppBar(
+                    backgroundColor: white,
+                    title: Text(_getTitleByIndex(_controller.selectedIndex)),
+                    leading: IconButton(
+                      onPressed: () {
+                        _key.currentState?.openDrawer();
+                      },
+                      icon: const Icon(Icons.menu),
+                      color: Colors.black.withOpacity(0.7),
+                    ),
+                  )
+                : null,
+            drawer: ExampleSidebarX(controller: _controller),
+            body: Row(
+              children: [
+                if (!isSmallScreen) ExampleSidebarX(controller: _controller),
+                Expanded(
+                  child: Center(
+                    child: _ScreensExample(
+                      controller: _controller,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class ExampleSidebarX extends StatelessWidget {
+  const ExampleSidebarX({
+    Key? key,
+    required SidebarXController controller,
+  })  : _controller = controller,
+        super(key: key);
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  final SidebarXController _controller;
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+    return SidebarX(
+      controller: _controller,
+      theme: SidebarXTheme(
+        margin: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        hoverColor: scaffoldBackgroundColor,
+        textStyle:
+            TextStyle(color: Color.fromARGB(255, 85, 85, 85).withOpacity(0.7)),
+        selectedTextStyle: const TextStyle(color: Colors.white),
+        itemTextPadding: const EdgeInsets.only(left: 30),
+        selectedItemTextPadding: const EdgeInsets.only(left: 30),
+        itemDecoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: white, width: 0.0001),
+        ),
+        selectedItemDecoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: actionColor.withOpacity(0.37),
+          ),
+          gradient: const LinearGradient(
+            colors: [accentCanvasColor, canvasColor],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.28),
+              blurRadius: 30,
+            )
+          ],
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.black.withOpacity(0.7),
+          size: 20,
+        ),
+        selectedIconTheme: const IconThemeData(
+          color: Colors.white,
+          size: 20,
+        ),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+      extendedTheme: const SidebarXTheme(
+        width: 200,
+        decoration: BoxDecoration(
+          color: white,
+          border: Border(
+            right: BorderSide(color: white, width: 0.0001),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 10,
+            )
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      footerDivider: divider,
+      headerBuilder: (context, extended) {
+        return SizedBox(
+          height: 100,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Image.asset(
+                '/Users/dophu/Documents/GitHub/DATN/support_qa/assets/logo.png'),
+          ),
+        );
+      },
+      items: [
+        SidebarXItem(
+          icon: Icons.home,
+          label: 'TRANG CHỦ',
+          onTap: () {},
+        ),
+        const SidebarXItem(
+          icon: Icons.message,
+          label: 'CHAT Q&A',
+        ),
+        const SidebarXItem(
+          icon: Icons.auto_stories,
+          label: 'TÀI LIỆU',
+        ),
+        const SidebarXItem(
+          icon: Icons.settings,
+          label: 'CÀI ĐẶT',
+        ),
+        const SidebarXItem(
+          icon: Icons.info,
+          label: 'GIỚI THIỆU',
+        ),
+      ],
     );
   }
 }
+
+class _ScreensExample extends StatelessWidget {
+  const _ScreensExample({
+    Key? key,
+    required this.controller,
+  }) : super(key: key);
+
+  final SidebarXController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) {
+        final pageTitle = _getTitleByIndex(controller.selectedIndex);
+        switch (controller.selectedIndex) {
+          case 0:
+            return ListView.builder(
+              padding: const EdgeInsets.only(top: 10),
+              itemBuilder: (context, index) => Container(
+                height: 100,
+                width: double.infinity,
+              ),
+            );
+          default:
+            return Text(
+              pageTitle,
+              style: theme.textTheme.headlineSmall,
+            );
+        }
+      },
+    );
+  }
+}
+
+String _getTitleByIndex(int index) {
+  switch (index) {
+    case 0:
+      return 'Trang chủ';
+    case 1:
+      return 'Chat';
+    case 2:
+      return 'Tài liệu';
+    case 3:
+      return 'Cài đặt';
+    case 4:
+      return 'Giới thiệu';
+    case 5:
+      return 'Profile';
+    case 6:
+      return 'Settings';
+    default:
+      return 'Not found page';
+  }
+}
+
+const primaryColor = Color.fromARGB(255, 31, 158, 255);
+const canvasColor = Color(0xFF2E2E48);
+const scaffoldBackgroundColor = Color(0xFF464667);
+const accentCanvasColor = Color.fromARGB(255, 66, 178, 247);
+const white = Colors.white;
+final actionColor = Color.fromARGB(255, 31, 158, 255).withOpacity(0.6);
+final divider = Divider(color: white.withOpacity(0.3), height: 1);
