@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:support_qa/sidebarx.dart';
+import 'package:support_qa/src/chat/chat_main.dart';
+import 'package:support_qa/src/chat/chat.dart';
 
 void main() {
   runApp(SidebarXExampleApp());
@@ -37,7 +39,6 @@ class SidebarXExampleApp extends StatelessWidget {
             appBar: isSmallScreen
                 ? AppBar(
                     backgroundColor: white,
-                    title: Text(_getTitleByIndex(_controller.selectedIndex)),
                     leading: IconButton(
                       onPressed: () {
                         _key.currentState?.openDrawer();
@@ -187,45 +188,25 @@ class _ScreensExample extends StatelessWidget {
     return AnimatedBuilder(
       animation: controller,
       builder: (context, child) {
-        final pageTitle = _getTitleByIndex(controller.selectedIndex);
         switch (controller.selectedIndex) {
           case 0:
-            return ListView.builder(
-              padding: const EdgeInsets.only(top: 10),
-              itemBuilder: (context, index) => Container(
-                height: 100,
-                width: double.infinity,
-              ),
+            // Màn hình cho tab 'Trang chủ'
+            return Text(
+              'Trang chủ',
+              style: theme.textTheme.headlineSmall,
             );
+          case 1:
+            // Màn hình cho tab 'Chat'
+            return ChatApp(); // Sửa lại theo tên class widget chat của bạn
+          // ... các trường hợp khác cho các selectedIndex khác
           default:
             return Text(
-              pageTitle,
+              'Not found page',
               style: theme.textTheme.headlineSmall,
             );
         }
       },
     );
-  }
-}
-
-String _getTitleByIndex(int index) {
-  switch (index) {
-    case 0:
-      return 'Trang chủ';
-    case 1:
-      return 'Chat';
-    case 2:
-      return 'Tài liệu';
-    case 3:
-      return 'Cài đặt';
-    case 4:
-      return 'Giới thiệu';
-    case 5:
-      return 'Profile';
-    case 6:
-      return 'Settings';
-    default:
-      return 'Not found page';
   }
 }
 
