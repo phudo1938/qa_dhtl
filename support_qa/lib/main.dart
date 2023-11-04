@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:support_qa/sidebarx.dart';
 import 'package:support_qa/src/chat/chat_main.dart';
 import 'package:support_qa/src/chat/chat.dart';
+import 'package:support_qa/src/library/library_main.dart';
 
 void main() {
   runApp(SidebarXExampleApp());
@@ -197,8 +198,10 @@ class _ScreensExample extends StatelessWidget {
             );
           case 1:
             // Màn hình cho tab 'Chat'
-            return ChatApp(); // Sửa lại theo tên class widget chat của bạn
-          // ... các trường hợp khác cho các selectedIndex khác
+            return ChatApp();
+          case 2:
+            // Màn hình cho tab 'Tài liệu'
+            return LibraryMain();
           default:
             return Text(
               'Not found page',
