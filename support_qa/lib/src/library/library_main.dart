@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// Giả sử đây là model của bạn
 class Major {
   final String name;
   final List<FileItem> files;
@@ -10,7 +9,7 @@ class Major {
 
 class FileItem {
   final String fileName;
-  final String fileIcon; // Giả sử đây là đường dẫn tới icon của file
+  final String fileIcon; // Đường dẫn đến icon của file
 
   FileItem({required this.fileName, required this.fileIcon});
 }

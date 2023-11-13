@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   runApp(ChatApp());
 }
 
 class ChatApp extends StatelessWidget {
-  const ChatApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Chat Interface',
+      title: 'Chat Q&A',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: ChatScreen(),
     );
@@ -20,70 +22,107 @@ class ChatApp extends StatelessWidget {
 
 class ChatScreen extends StatefulWidget {
   @override
-  State createState() => ChatScreenState();
+  _ChatScreenState createState() => _ChatScreenState();
 }
 
-class ChatScreenState extends State<ChatScreen> {
-  final List<String> _messages = [];
-  final TextEditingController _textController = TextEditingController();
+class _ChatScreenState extends State<ChatScreen> {
+  final TextEditingController _controller = TextEditingController();
+  List<Map<String, dynamic>> messages = [];
 
-  void _handleSubmitted(String text) {
-    _textController.clear();
+  void _sendMessage(String text) {
     setState(() {
-      _messages.insert(0, text);
+      messages.insert(0, {"text": text, "isUser": true});
     });
-    // Send your message to AI Service here or display response from AI
+    _controller.clear();
+    _callAssistant(text);
+  }
+
+  void _callAssistant(String text) async {
+    final String url =
+        'https://your-api-endpoint.com/assistant'; // Thay thế bằng URL thực tế của bạn
+    final http.Response response = await http.post(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'message': text,
+      }),
+    );
+    if (response.statusCode == 200) {
+      final String responseBody = json.decode(response.body)[
+          'reply']; // Giả sử rằng API trả về một đối tượng JSON với khóa 'reply'
+      setState(() {
+        messages.insert(0, {"text": responseBody, "isUser": false});
+      });
+    } else {
+      // Xử lý lỗi ở đây
+      print('Request failed with status: ${response.statusCode}.');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Chat Q&A Support")),
+      appBar: AppBar(
+        title: Text('Chat Q&A'),
+        elevation: 0,
+      ),
       body: Column(
-        children: [
-          Flexible(
+        children: <Widget>[
+          Expanded(
             child: ListView.builder(
-              padding: EdgeInsets.all(8.0),
               reverse: true,
-              itemBuilder: (_, int index) =>
-                  ListTile(title: Text(_messages[index])),
-              itemCount: _messages.length,
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                final message = messages[index];
+                return ListTile(
+                  title: Align(
+                    alignment: message["isUser"]
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                      decoration: BoxDecoration(
+                        color:
+                            message["isUser"] ? Colors.blue : Colors.grey[300],
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        message["text"],
+                        style: TextStyle(
+                          color:
+                              message["isUser"] ? Colors.white : Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
-          Divider(height: 1.0),
+          Divider(height: 1),
           Container(
-            decoration: BoxDecoration(color: Theme.of(context).cardColor),
-            child: _buildTextComposer(),
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            color: Colors.white,
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    decoration: InputDecoration(hintText: 'Send a message'),
+                    onSubmitted: _sendMessage,
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: () => _sendMessage(_controller.text),
+                ),
+              ],
+            ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildTextComposer() {
-    return IconTheme(
-      data: IconThemeData(color: Theme.of(context).colorScheme.secondary),
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 8.0),
-        child: Row(
-          children: [
-            Flexible(
-              child: TextField(
-                controller: _textController,
-                onSubmitted: _handleSubmitted,
-                decoration:
-                    InputDecoration.collapsed(hintText: "Gửi một tin nhắn"),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 4.0),
-              child: IconButton(
-                icon: const Icon(Icons.send),
-                onPressed: () => _handleSubmitted(_textController.text),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
