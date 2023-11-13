@@ -11,7 +11,8 @@ load_dotenv()
 # Check OpenAI version is correct
 required_version = version.parse("1.1.1")
 current_version = version.parse(openai.__version__)
-OPENAI_API_KEY = os.environ['OPENAI_API_KEY']
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
 if current_version < required_version:
   raise ValueError(f"Error: OpenAI version {openai.__version__}"
                    " is less than the required version 1.1.1")
@@ -26,7 +27,7 @@ client = OpenAI(
     api_key=OPENAI_API_KEY)  # should use env variable OPENAI_API_KEY in secrets (bottom left corner)
 
 # Create new assistant or load existing
-assistant_id = functions.create_assistant(client)
+assistant_id = "asst_zrubwwAlUS8j3ppUiBjPCriK"
 
 # Start conversation thread
 @app.route('/start', methods=['GET'])

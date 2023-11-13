@@ -39,7 +39,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _callAssistant(String text) async {
     final String url =
-        'http://127.0.0.1:5000/chat'; // Thay thế bằng URL thực tế của bạn
+        'http://127.0.0.1:8080/chat'; // Thay thế bằng URL thực tế của bạn
     final http.Response response = await http.post(
       Uri.parse(url),
       headers: <String, String>{
