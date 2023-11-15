@@ -14,16 +14,19 @@ class SidebarXController extends ChangeNotifier {
   var _extended = false;
 
   final _extendedController = StreamController<bool>.broadcast();
+
   Stream<bool> get extendStream =>
       _extendedController.stream.asBroadcastStream();
 
   int get selectedIndex => _selectedIndex;
+
   void selectIndex(int val) {
     _selectedIndex = val;
     notifyListeners();
   }
 
   bool get extended => _extended;
+
   void setExtended(bool extended) {
     _extended = extended;
     _extendedController.add(extended);

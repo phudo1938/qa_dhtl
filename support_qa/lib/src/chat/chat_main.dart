@@ -1,6 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 void main() {
   runApp(ChatApp());
@@ -28,37 +29,65 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   List<Map<String, dynamic>> messages = [];
+  String threadId = ''; // Store the thread_id here
+  String apiURL = 'http://127.0.0.1:8080/';
+
+  void _startConversation() async {
+    final String startUrl =
+        apiURL + 'start'; // Replace with your server's actual address
+    final http.Response response = await http.get(Uri.parse(startUrl));
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      setState(() {
+        threadId = data['thread_id'];
+      });
+    } else {
+      // Handle error, maybe set a flag to indicate the conversation couldn't be started
+      print('Failed to start conversation: ${response.statusCode}');
+    }
+  }
 
   void _sendMessage(String text) {
+    if (threadId.isEmpty) {
+      // Ensure threadId is obtained before sending a message
+      print('Thread ID is not set, cannot send message.');
+      return;
+    }
     setState(() {
       messages.insert(0, {"text": text, "isUser": true});
     });
     _controller.clear();
-    _callAssistant(text);
+    _callAssistant(text, threadId); // Pass the thread_id
   }
 
-  void _callAssistant(String text) async {
-    final String url =
-        'http://127.0.0.1:8080/chat'; // Thay thế bằng URL thực tế của bạn
+  void _callAssistant(String text, String threadId) async {
+    final String url = apiURL + 'chat';
     final http.Response response = await http.post(
       Uri.parse(url),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{
+      body: jsonEncode(<String, dynamic>{
+        'thread_id': threadId, // Include the thread_id in the request
         'message': text,
       }),
     );
+
     if (response.statusCode == 200) {
-      final String responseBody = json.decode(response.body)[
-          'reply']; // Giả sử rằng API trả về một đối tượng JSON với khóa 'reply'
+      final String responseBody = json.decode(response.body)['response'];
       setState(() {
         messages.insert(0, {"text": responseBody, "isUser": false});
       });
     } else {
-      // Xử lý lỗi ở đây
+      // Handle errors here
       print('Request failed with status: ${response.statusCode}.');
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _startConversation();
   }
 
   @override

@@ -1,8 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:support_qa/sidebarx.dart';
-import 'package:support_qa/src/chat/chat_main.dart';
 import 'package:support_qa/src/chat/chat.dart';
+import 'package:support_qa/src/chat/chat_main.dart';
 import 'package:support_qa/src/library/library_main.dart';
 
 void main() {
