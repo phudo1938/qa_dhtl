@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:support_qa/src/chat/typing/typing_indicator.dart';
 
 void main() {
   runApp(ChatApp());
@@ -31,6 +32,7 @@ class _ChatScreenState extends State<ChatScreen> {
   List<Map<String, dynamic>> messages = [];
   String threadId = ''; // Store the thread_id here
   String apiURL = 'http://127.0.0.1:8080/';
+  bool isWaitingForResponse = false;
 
   void _startConversation() async {
     final String startUrl =
@@ -58,6 +60,9 @@ class _ChatScreenState extends State<ChatScreen> {
     });
     _controller.clear();
     _callAssistant(text, threadId); // Pass the thread_id
+    setState(() {
+      isWaitingForResponse = true; // Start showing the typing indicator
+    });
   }
 
   void _callAssistant(String text, String threadId) async {
@@ -77,10 +82,16 @@ class _ChatScreenState extends State<ChatScreen> {
       final String responseBody = json.decode(response.body)['response'];
       setState(() {
         messages.insert(0, {"text": responseBody, "isUser": false});
+        setState(() {
+          isWaitingForResponse = false; // Stop showing the typing indicator
+        });
       });
     } else {
       // Handle errors here
       print('Request failed with status: ${response.statusCode}.');
+      setState(() {
+        isWaitingForResponse = false; // Stop showing the typing indicator on error
+      });
     }
   }
 
@@ -102,9 +113,16 @@ class _ChatScreenState extends State<ChatScreen> {
           Expanded(
             child: ListView.builder(
               reverse: true,
-              itemCount: messages.length,
+              itemCount: messages.length + (isWaitingForResponse ? 1 : 0), // Correctly placed itemCount,
               itemBuilder: (context, index) {
-                final message = messages[index];
+                // If waiting for response and it's the first item, show the typing indicator
+                if (isWaitingForResponse && index == 0) {
+                  return TypingIndicator();
+                }
+                // Adjust index if the typing indicator is being shown
+                final actualIndex = isWaitingForResponse ? index - 1 : index;
+                final message = messages[actualIndex];
+
                 return ListTile(
                   title: Align(
                     alignment: message["isUser"]
