@@ -107,6 +107,7 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         title: Text('Chat Q&A'),
         elevation: 0,
+        backgroundColor: const Color.fromARGB(255, 75, 174, 255),
       ),
       body: Column(
         children: <Widget>[

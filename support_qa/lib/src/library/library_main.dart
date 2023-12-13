@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Major {
   final String name;
@@ -10,8 +11,9 @@ class Major {
 class FileItem {
   final String fileName;
   final String fileIcon; // Đường dẫn đến icon của file
+  final String dayLink;  // Đường dẫn đến ngày
 
-  FileItem({required this.fileName, required this.fileIcon});
+  FileItem({required this.fileName, required this.fileIcon, required this.dayLink});
 }
 
 void main() {
@@ -33,10 +35,18 @@ class MajorsScreen extends StatelessWidget {
   // Tạo một list các ngành học và files của chúng
   final List<Major> majors = [
     Major(
-      name: 'Computer Science',
+      name: 'Công nghệ thông tin',
       files: [
-        FileItem(fileName: 'Lecture 1.pdf', fileIcon: 'icons/pdf_icon.png'),
-        // Thêm các files khác
+        FileItem(
+          fileName: 'Laptrinhdiong.pdf',
+          fileIcon: '/Users/Apple/Documents/GitHub/DATN/support_qa/assets/pdf_icon.png',
+          dayLink: 'https://drive.google.com/file/d/1UU2RZti_7MZcvyHencMvF4nUn7taVEBO/view?usp=sharing',
+        ),
+        FileItem(
+          fileName: 'tieng_anh.docx',
+          fileIcon: '/Users/Apple/Documents/GitHub/DATN/support_qa/assets/word_icon.png',
+          dayLink: 'https://docs.google.com/document/d/1FFrrrAHShG3J_5bmDvmk3ph8yvv8KSh8AWud2J6Gikg/edit?usp=sharing',
+        ),
       ],
     ),
     // Thêm các ngành học khác
@@ -47,6 +57,7 @@ class MajorsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Chọn Ngành Học'),
+        backgroundColor: const Color.fromARGB(255, 75, 174, 255),
       ),
       body: ListView.builder(
         itemCount: majors.length,
@@ -74,26 +85,47 @@ class FilesScreen extends StatelessWidget {
 
   FilesScreen({required this.major});
 
+  void openGoogleDriveLink(String fileLink) async {
+    if (await canLaunch(fileLink)) {
+      await launch(fileLink);
+    } else {
+      print("Không thể mở đường dẫn");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Files của ${major.name}'),
       ),
-      body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, // Số lượng cột
-          // Thêm các thuộc tính khác như crossAxisSpacing, mainAxisSpacing,...
-        ),
+      body: ListView.builder(
         itemCount: major.files.length,
         itemBuilder: (context, index) {
-          return Card(
-            child: Column(
-              children: <Widget>[
-                Image.asset(major.files[index].fileIcon),
-                Text(major.files[index].fileName),
-                // Thêm các widgets khác nếu cần
-              ],
+          return InkWell(
+            onTap: () {
+              print("Đã bấm vào mục ${major.files[index].fileName}");
+              openGoogleDriveLink(major.files[index].dayLink);
+            },
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Row(
+                children: <Widget>[
+                  Image.asset(
+                    major.files[index].fileIcon,
+                    width: 40,
+                    height: 40,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(major.files[index].fileName),
+                      SizedBox(height: 4),
+                    ],
+                  ),
+                  // Thêm các widgets khác nếu cần
+                ],
+              ),
             ),
           );
         },
@@ -101,3 +133,4 @@ class FilesScreen extends StatelessWidget {
     );
   }
 }
+

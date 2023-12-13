@@ -2,6 +2,7 @@ import os
 from time import sleep
 
 import openai
+import logging
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -45,41 +46,42 @@ def start_conversation():
 # Generate response
 @app.route('/chat', methods=['POST'])
 def chat():
-    data = request.json
-    thread_id = data.get('thread_id')
-    user_input = data.get('message', '')
+    try:
+        data = request.json
+        thread_id = data.get('thread_id')
+        user_input = data.get('message', '')
 
-    if not thread_id:
-        print("Error: Missing thread_id")  # Debugging line
-        return jsonify({"error": "Missing thread_id"}), 400
+        if not thread_id:
+            print("Error: Missing thread_id")  # Debugging line
+            return jsonify({"error": "Missing thread_id"}), 400
 
-    print(f"Received message: {user_input} for thread ID: {thread_id}"
-          )  # Debugging line
+        print(f"Received message: {user_input} for thread ID: {thread_id}"
+              )  # Debugging line
 
-    # Add the user's message to the thread
-    client.beta.threads.messages.create(thread_id=thread_id,
-                                        role="user",
-                                        content=user_input)
+        # Add the user's message to the thread
+        client.beta.threads.messages.create(thread_id=thread_id,
+                                            role="user",
+                                            content=user_input)
 
-    # Run the Assistant
-    run = client.beta.threads.runs.create(thread_id=thread_id,
-                                          assistant_id=assistant_id)
+        # Run the Assistant asynchronously
+        run = client.beta.threads.runs.create(thread_id=thread_id,
+                                              assistant_id=assistant_id)
 
-    # Check if the Run requires action (function call)
-    while True:
-        run_status = client.beta.threads.runs.retrieve(thread_id=thread_id,
-                                                       run_id=run.id)
-        print(f"Run status: {run_status.status}")
-        if run_status.status == 'completed':
-            break
-        sleep(1)  # Wait for a second before checking again
+        # Poll for completion
+        run_status = None
+        while run_status is None or run_status.status != 'completed':
+            sleep(1)
+            run_status = client.beta.threads.runs.retrieve(thread_id=thread_id, run_id=run.id)
 
-    # Retrieve and return the latest message from the assistant
-    messages = client.beta.threads.messages.list(thread_id=thread_id)
-    response = messages.data[0].content[0].text.value
+        # Retrieve and return the latest message from the assistant
+        messages = client.beta.threads.messages.list(thread_id=thread_id)
+        response = messages.data[0].content[0].text.value
 
-    print(f"Assistant response: {response}")  # Debugging line
-    return jsonify({"response": response})
+        print(f"Assistant response: {response}")  # Debugging line
+        return jsonify({"response": response})
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return jsonify({"error": "Internal server error"}), 500
 
 
 # Run server

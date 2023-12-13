@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:support_qa/sidebarx.dart';
 import 'package:support_qa/src/chat/chat.dart';
 import 'package:support_qa/src/chat/chat_main.dart';
+import 'package:support_qa/src/home/home.dart';
 import 'package:support_qa/src/library/library_main.dart';
 
 void main() {
@@ -143,7 +144,7 @@ class ExampleSidebarX extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Image.asset(
-                '/Users/dophu/Documents/GitHub/DATN/support_qa/assets/logo.png'),
+                '/Users/Apple/Documents/GitHub/DATN/support_qa/assets/logo.png'),
           ),
         );
       },
@@ -191,10 +192,7 @@ class _ScreensExample extends StatelessWidget {
         switch (controller.selectedIndex) {
           case 0:
             // Màn hình cho tab 'Trang chủ'
-            return Text(
-              'Trang chủ',
-              style: theme.textTheme.headlineSmall,
-            );
+            return HomePage();
           case 1:
             // Màn hình cho tab 'Chat'
             return ChatApp();
