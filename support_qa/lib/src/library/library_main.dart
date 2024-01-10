@@ -35,17 +35,72 @@ class MajorsScreen extends StatelessWidget {
   // Tạo một list các ngành học và files của chúng
   final List<Major> majors = [
     Major(
-      name: 'Công nghệ thông tin',
+      name: 'Sổ tay sinh viên năm học 2022-2023',
       files: [
         FileItem(
-          fileName: 'Laptrinhdiong.pdf',
+          fileName: 'quy_dinh_ve_chuan_dau_ra.pdf',
           fileIcon: '/Users/Apple/Documents/GitHub/DATN/support_qa/assets/pdf_icon.png',
-          dayLink: 'https://drive.google.com/file/d/1UU2RZti_7MZcvyHencMvF4nUn7taVEBO/view?usp=sharing',
+          dayLink: 'https://drive.google.com/file/d/1zlbQRFJiMzNL29uHKY7HrfrAezhzYkR7/view?usp=sharing',
         ),
         FileItem(
-          fileName: 'tieng_anh.docx',
+          fileName: 'quy_che_dao_tao.docx',
           fileIcon: '/Users/Apple/Documents/GitHub/DATN/support_qa/assets/word_icon.png',
-          dayLink: 'https://docs.google.com/document/d/1FFrrrAHShG3J_5bmDvmk3ph8yvv8KSh8AWud2J6Gikg/edit?usp=sharing',
+          dayLink: 'https://docs.google.com/document/d/19WNz9g9rThWn0ekrfkIFERGU1ccUyYHj/edit?usp=sharing&ouid=112167676018090175261&rtpof=true&sd=true',
+        ),
+        FileItem(
+          fileName: 'qd_ve_tieng_anh.docx',
+          fileIcon: '/Users/Apple/Documents/GitHub/DATN/support_qa/assets/word_icon.png',
+          dayLink: 'https://docs.google.com/document/d/1WbGPAvU2xBjzWZBs10gZWWF1bfvMPrGv/edit?usp=sharing&ouid=112167676018090175261&rtpof=true&sd=true',
+        ),
+        FileItem(
+          fileName: 'ngoai_tru.docx',
+          fileIcon: '/Users/Apple/Documents/GitHub/DATN/support_qa/assets/word_icon.png',
+          dayLink: 'https://docs.google.com/document/d/1mgg089nOpA0Ozvlzp4_4CYY0MKgFYpuz/edit?usp=sharing&ouid=112167676018090175261&rtpof=true&sd=true',
+        ),
+        FileItem(
+          fileName: 'hoc_phi.docx',
+          fileIcon: '/Users/Apple/Documents/GitHub/DATN/support_qa/assets/word_icon.png',
+          dayLink: 'https://docs.google.com/document/d/1xtmqXaHG8CpkWxgEcJ7mkSs5-wseg_rf/edit?usp=sharing&ouid=112167676018090175261&rtpof=true&sd=true',
+        ),
+        FileItem(
+          fileName: 'hoc_bong.docx',
+          fileIcon: '/Users/Apple/Documents/GitHub/DATN/support_qa/assets/word_icon.png',
+          dayLink: 'https://docs.google.com/document/d/1GphFTExvSMRKAWBAr4zGoRUwnq59N1PJ/edit?usp=sharing&ouid=112167676018090175261&rtpof=true&sd=true',
+        ),
+      ],
+    ),
+    Major(
+      name: 'Sổ tay sinh viên năm học 2023-2024',
+      files: [
+        FileItem(
+          fileName: 'quy_dinh_ve_chuan_dau_ra.pdf',
+          fileIcon: '/Users/Apple/Documents/GitHub/DATN/support_qa/assets/pdf_icon.png',
+          dayLink: 'https://drive.google.com/file/d/1zlbQRFJiMzNL29uHKY7HrfrAezhzYkR7/view?usp=sharing',
+        ),
+        FileItem(
+          fileName: 'quy_che_dao_tao.docx',
+          fileIcon: '/Users/Apple/Documents/GitHub/DATN/support_qa/assets/word_icon.png',
+          dayLink: 'https://docs.google.com/document/d/19WNz9g9rThWn0ekrfkIFERGU1ccUyYHj/edit?usp=sharing&ouid=112167676018090175261&rtpof=true&sd=true',
+        ),
+        FileItem(
+          fileName: 'qd_ve_tieng_anh.docx',
+          fileIcon: '/Users/Apple/Documents/GitHub/DATN/support_qa/assets/word_icon.png',
+          dayLink: 'https://docs.google.com/document/d/1WbGPAvU2xBjzWZBs10gZWWF1bfvMPrGv/edit?usp=sharing&ouid=112167676018090175261&rtpof=true&sd=true',
+        ),
+        FileItem(
+          fileName: 'ngoai_tru.docx',
+          fileIcon: '/Users/Apple/Documents/GitHub/DATN/support_qa/assets/word_icon.png',
+          dayLink: 'https://docs.google.com/document/d/1mgg089nOpA0Ozvlzp4_4CYY0MKgFYpuz/edit?usp=sharing&ouid=112167676018090175261&rtpof=true&sd=true',
+        ),
+        FileItem(
+          fileName: 'hoc_phi.docx',
+          fileIcon: '/Users/Apple/Documents/GitHub/DATN/support_qa/assets/word_icon.png',
+          dayLink: 'https://docs.google.com/document/d/1xtmqXaHG8CpkWxgEcJ7mkSs5-wseg_rf/edit?usp=sharing&ouid=112167676018090175261&rtpof=true&sd=true',
+        ),
+        FileItem(
+          fileName: 'hoc_bong.docx',
+          fileIcon: '/Users/Apple/Documents/GitHub/DATN/support_qa/assets/word_icon.png',
+          dayLink: 'https://docs.google.com/document/d/1GphFTExvSMRKAWBAr4zGoRUwnq59N1PJ/edit?usp=sharing&ouid=112167676018090175261&rtpof=true&sd=true',
         ),
       ],
     ),
@@ -56,7 +111,7 @@ class MajorsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chọn Ngành Học'),
+        title: Text('Tài Liệu'),
         backgroundColor: const Color.fromARGB(255, 75, 174, 255),
       ),
       body: ListView.builder(
@@ -65,7 +120,6 @@ class MajorsScreen extends StatelessWidget {
           return ListTile(
             title: Text(majors[index].name),
             onTap: () {
-              // Khi người dùng chọn một ngành, chuyển đến màn hình hiển thị files của ngành đó
               Navigator.push(
                 context,
                 MaterialPageRoute(

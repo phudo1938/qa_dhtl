@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:support_qa/sidebarx.dart';
+import 'package:support_qa/src/about/about.dart';
 import 'package:support_qa/src/chat/chat.dart';
 import 'package:support_qa/src/chat/chat_main.dart';
 import 'package:support_qa/src/home/home.dart';
@@ -163,10 +164,6 @@ class ExampleSidebarX extends StatelessWidget {
           label: 'TÀI LIỆU',
         ),
         const SidebarXItem(
-          icon: Icons.settings,
-          label: 'CÀI ĐẶT',
-        ),
-        const SidebarXItem(
           icon: Icons.info,
           label: 'GIỚI THIỆU',
         ),
@@ -199,6 +196,9 @@ class _ScreensExample extends StatelessWidget {
           case 2:
             // Màn hình cho tab 'Tài liệu'
             return LibraryMain();
+          case 3:
+          // Màn hình cho tab 'Tài liệu'
+            return AboutThuyLoi();
           default:
             return Text(
               'Not found page',

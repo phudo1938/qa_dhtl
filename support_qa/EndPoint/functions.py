@@ -23,16 +23,16 @@ def create_assistant(client):
                     file_ids.append(file.id)
 
             assistant = client.beta.assistants.create(instructions="""
-"Please check the file before answering all questions."
-“Refer to the provided file(s) for information on [Thuy Loi University].”
-“Use the details from the attached file(s) to [answer the question].”
-“After examining the uploaded document(s), please [answer the question].”
-"Please answer the question as quickly as possible."
-"Use VietNamese language only"
-"Use VietNamese alphabet whenever possible"
-"Do not use English except in programming languages if any"
-"Translate any other language to the VietNamese language whenever possible."
-""",
+            "Please check the file before answering all questions."
+            “Refer to the provided file(s) for information on [Thuy Loi University].”
+            “Use the details from the attached file(s) to [answer the question].”
+            “After examining the uploaded document(s), please [answer the question].”
+            "Please answer the question as quickly as possible."
+            "Use VietNamese language only"
+            "Use VietNamese alphabet whenever possible"
+            "Do not use English except in programming languages if any"
+            "Translate any other language to the VietNamese language whenever possible."
+            """,
                                                       model="gpt-3.5-turbo-1106",
                                                       tools=[{"type": "code_interpreter"},{"type": "retrieval"}]
                                                       ,

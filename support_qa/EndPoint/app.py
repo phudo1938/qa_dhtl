@@ -2,7 +2,6 @@ import os
 from time import sleep
 
 import openai
-import logging
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -26,9 +25,10 @@ else:
 # Start Flask app
 app = Flask(__name__)
 CORS(app)
+
 # Init client
 client = OpenAI(
-    api_key=OPENAI_API_KEY)  # should use env variable OPENAI_API_KEY in secrets (bottom left corner)
+    api_key=OPENAI_API_KEY)
 
 # Create new assistant or load existing
 assistant_id = functions.create_assistant(client)
